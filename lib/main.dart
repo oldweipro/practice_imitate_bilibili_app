@@ -62,7 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // });
     TestRequest request = TestRequest();
     request.add("oldwei", "denglan").addHeader("bbb", "ccc");
-    try {} on NeedAuth catch (e) {
+    try {
+      var result = await HiNet.getInstance().fire(request);
+      print(result);
+    } on NeedAuth catch (e) {
       print(e);
     } on NeedLogin catch (e) {
       print(e);
@@ -71,8 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       print(e);
     }
-    var result = await HiNet.getInstance().fire(request);
-    return result;
+    // var result = await HiNet.getInstance().fire(request);
+    // return result;
   }
 
   @override
