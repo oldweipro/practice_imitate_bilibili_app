@@ -61,7 +61,10 @@ class _MyHomePageState extends State<MyHomePage> {
     //   _counter++;
     // });
     TestRequest request = TestRequest();
-    request.add("oldwei", "denglan").addHeader("bbb", "ccc");
+    request
+        .add("oldwei", "denglan")
+        .addHeader("bbb", "ccc")
+        .add("requestPrams", "niubi");
     try {
       var result = await HiNet.getInstance().fire(request);
       print(result);

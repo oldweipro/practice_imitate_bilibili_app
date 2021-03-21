@@ -1,6 +1,6 @@
+import 'package:bilibili/http/core/dio_adapter.dart';
 import 'package:bilibili/http/core/hi_error.dart';
 import 'package:bilibili/http/core/hi_net_adapter.dart';
-import 'package:bilibili/http/core/mock_adapter.dart';
 import 'package:bilibili/http/request/base_request.dart';
 
 class HiNet {
@@ -43,15 +43,21 @@ class HiNet {
       default:
         throw HiNetError(status, result.toString(), data: result);
     }
-    return result;
+    // return result;
   }
 
   Future<dynamic> send<T>(BaseRequest request) async {
     printLog('url:${request.url()}');
 
-    /// 使用Mock发送请求
-    HiNetAdapter adapter = MockAdapter();
+    /// 使用Dio发送请求
+    HiNetAdapter adapter = DioAdapter();
     return adapter.send(request);
+
+    /// 使用Mock发送请求
+    // HiNetAdapter adapter = MockAdapter();
+    // return adapter.send(request);
+
+    /// 原来手写的发送请求
     // printLog('method:${request.httpMethod()}');
     // request.addHeader("token", "123");
     // printLog('header:${request.header}');
