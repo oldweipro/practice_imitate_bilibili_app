@@ -1,6 +1,5 @@
-import 'package:bilibili/http/core/hi_error.dart';
-import 'package:bilibili/http/core/hi_net.dart';
-import 'package:bilibili/http/request/test_request.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -60,25 +59,38 @@ class _MyHomePageState extends State<MyHomePage> {
     //   // called again, and so nothing would appear to happen.
     //   _counter++;
     // });
-    TestRequest request = TestRequest();
-    request
-        .add("oldwei", "denglan")
-        .addHeader("bbb", "ccc")
-        .add("requestPrams", "niubi");
-    try {
-      var result = await HiNet.getInstance().fire(request);
-      print(result);
-    } on NeedAuth catch (e) {
-      print(e);
-    } on NeedLogin catch (e) {
-      print(e);
-    } on HiNetError catch (e) {
-      print(e);
-    } catch (e) {
-      print(e);
-    }
+    // TestRequest request = TestRequest();
+    // request
+    //     .add("oldwei", "denglan")
+    //     .addHeader("bbb", "ccc")
+    //     .add("requestPrams", "niubi");
+    // try {
+    //   var result = await HiNet.getInstance().fire(request);
+    //   print(result);
+    // } on NeedAuth catch (e) {
+    //   print(e);
+    // } on NeedLogin catch (e) {
+    //   print(e);
+    // } on HiNetError catch (e) {
+    //   print(e);
+    // } catch (e) {
+    //   print(e);
+    // }
     // var result = await HiNet.getInstance().fire(request);
     // return result;
+    test();
+  }
+
+  void test() {
+    var jsonString =
+        '{"name":"flutter","url":"https://coding.imooc.com/class/487.html"}';
+    // json 转 map
+    Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+    print('name:${jsonMap['name']}');
+    print('url:${jsonMap['url']}');
+    // map 转 json
+    String json = jsonEncode(jsonMap);
+    print('json:$json');
   }
 
   @override
