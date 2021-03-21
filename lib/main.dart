@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bilibili/model/owner.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -78,19 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // }
     // var result = await HiNet.getInstance().fire(request);
     // return result;
-    test();
-  }
-
-  void test() {
-    var jsonString =
-        '{"name":"flutter","url":"https://coding.imooc.com/class/487.html"}';
-    // json 转 map
-    Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    print('name:${jsonMap['name']}');
-    print('url:${jsonMap['url']}');
-    // map 转 json
-    String json = jsonEncode(jsonMap);
-    print('json:$json');
+    // jsonTest();
+    modelTest();
   }
 
   @override
@@ -143,5 +133,29 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void jsonTest() {
+    var jsonString =
+        '{"name":"flutter","url":"https://coding.imooc.com/class/487.html"}';
+    // json 转 map
+    Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+    print('name:${jsonMap['name']}');
+    print('url:${jsonMap['url']}');
+    // map 转 json
+    String json = jsonEncode(jsonMap);
+    print('json:$json');
+  }
+
+  void modelTest() {
+    var ownerMap = {
+      "name": "oldwei",
+      "face": "handsome",
+      "fans": 999999999999999
+    };
+    Owner owner = Owner.fromMap(ownerMap);
+    print('name:${owner.name}');
+    print('face:${owner.face}');
+    print('fans:${owner.fans}');
   }
 }
