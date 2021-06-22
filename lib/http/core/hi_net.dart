@@ -1,13 +1,20 @@
-import 'package:bilibili/http/core/dio_adapter.dart';
 import 'package:bilibili/http/core/hi_error.dart';
 import 'package:bilibili/http/core/hi_net_adapter.dart';
 import 'package:bilibili/http/request/base_request.dart';
 
+import 'dio_adapter.dart';
+
 class HiNet {
+  //单例模式
   HiNet._();
+
   static HiNet _instance;
+
+  //静态方法获取单例
   static HiNet getInstance() {
+    //懒汉式
     if (_instance == null) {
+      //用的时候才创建
       _instance = HiNet._();
     }
     return _instance;
@@ -43,28 +50,15 @@ class HiNet {
       default:
         throw HiNetError(status, result.toString(), data: result);
     }
-    // return result;
   }
 
+  //发送请求方法
   Future<dynamic> send<T>(BaseRequest request) async {
     printLog('url:${request.url()}');
-
-    /// 使用Dio发送请求
+    printLog('method:${request.httpMethod()}');
+    // 底层网络库的切换,当前使用Dio发送请求
     HiNetAdapter adapter = DioAdapter();
     return adapter.send(request);
-
-    /// 使用Mock发送请求
-    // HiNetAdapter adapter = MockAdapter();
-    // return adapter.send(request);
-
-    /// 原来手写的发送请求
-    // printLog('method:${request.httpMethod()}');
-    // request.addHeader("token", "123");
-    // printLog('header:${request.header}');
-    // return Future.value({
-    //   "statusCode": 200,
-    //   "data": {"code": 0, "message": "success"}
-    // });
   }
 
   void printLog(log) {

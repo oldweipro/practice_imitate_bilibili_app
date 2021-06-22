@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 class DioAdapter extends HiNetAdapter {
   @override
   Future<HiNetResponse<T>> send<T>(BaseRequest request) async {
+    //参数设置
     var response, options = Options(headers: request.header);
     var error;
     try {
@@ -15,6 +16,9 @@ class DioAdapter extends HiNetAdapter {
       } else if (request.httpMethod() == HttpMethod.POST) {
         response = await Dio()
             .post(request.url(), data: request.params, options: options);
+      } else if (request.httpMethod() == HttpMethod.PUT) {
+        response = await Dio()
+            .put(request.url(), data: request.params, options: options);
       } else if (request.httpMethod() == HttpMethod.DELETE) {
         response = await Dio()
             .delete(request.url(), data: request.params, options: options);

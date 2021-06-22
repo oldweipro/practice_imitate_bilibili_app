@@ -7,10 +7,19 @@ abstract class HiNetAdapter {
 }
 
 class HiNetResponse<T> {
+  //返回的数据
   T data;
+
+  //返回请求
   BaseRequest request;
+
+  //返回状态
   int statusCode;
+
+  //返回状态信息
   String statusMessage;
+
+  //额外数据
   dynamic extra;
 
   @override
@@ -22,6 +31,7 @@ class HiNetResponse<T> {
   }
 
   HiNetResponse(
+      //设置为非必填
       {this.data,
       this.request,
       this.statusCode,

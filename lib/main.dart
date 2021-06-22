@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bilibili/db/hi_cache.dart';
 import 'package:bilibili/model/owner.dart';
 import 'package:flutter/material.dart';
 
@@ -51,36 +52,30 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    HiCache.preInit();
+  }
+
   Future<void> _incrementCounter() async {
-    // setState(() {
-    //   // This call to setState tells the Flutter framework that something has
-    //   // changed in this State, which causes it to rerun the build method below
-    //   // so that the display can reflect the updated values. If we changed
-    //   // _counter without calling setState(), then the build method would not be
-    //   // called again, and so nothing would appear to happen.
-    //   _counter++;
-    // });
     // TestRequest request = TestRequest();
-    // request
-    //     .add("oldwei", "denglan")
-    //     .addHeader("bbb", "ccc")
-    //     .add("requestPrams", "niubi");
+    // request.add("oldwei", "denglan").add("requestPrams", "niubi");
     // try {
     //   var result = await HiNet.getInstance().fire(request);
-    //   print(result);
+    //   print('返回请求结果：$result');
     // } on NeedAuth catch (e) {
-    //   print(e);
+    //   print('需要授权:$e');
     // } on NeedLogin catch (e) {
-    //   print(e);
+    //   print('需要登录：$e');
     // } on HiNetError catch (e) {
-    //   print(e);
+    //   print('全局错误:$e');
     // } catch (e) {
-    //   print(e);
+    //   print('未知错误:$e');
     // }
-    // var result = await HiNet.getInstance().fire(request);
-    // return result;
     // jsonTest();
-    modelTest();
+    // modelTest();
+    cacheTest();
   }
 
   @override
@@ -157,5 +152,11 @@ class _MyHomePageState extends State<MyHomePage> {
     print('name:${owner.name}');
     print('face:${owner.face}');
     print('fans:${owner.fans}');
+  }
+
+  void cacheTest() {
+    HiCache.getInstance().setString("aa", "qwer");
+    var value = HiCache.getInstance().get("aa");
+    print("value:$value");
   }
 }
