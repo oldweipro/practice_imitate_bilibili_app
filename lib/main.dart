@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:bilibili/db/hi_cache.dart';
+import 'package:bilibili/http/core/hi_error.dart';
+import 'package:bilibili/http/core/hi_net.dart';
+import 'package:bilibili/http/dao/login_dao.dart';
+import 'package:bilibili/http/request/notice_request.dart';
 import 'package:bilibili/model/owner.dart';
 import 'package:flutter/material.dart';
 
@@ -75,7 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // }
     // jsonTest();
     // modelTest();
-    cacheTest();
+    // cacheTest();
+    // testLogin();
+    testNotice();
   }
 
   @override
@@ -158,5 +164,31 @@ class _MyHomePageState extends State<MyHomePage> {
     HiCache.getInstance().setString("aa", "qwer");
     var value = HiCache.getInstance().get("aa");
     print("value:$value");
+  }
+
+  void testLogin() async {
+    try {
+      var result = await LoginDao.login("oldwei", "qwer1234");
+      // var result =
+      //     await LoginDao.registration("oldwei", "qwer1234", '7699791', '5854');
+      print(result);
+    } on NeedAuth catch (e) {
+      print(e);
+    } on HiNetError catch (e) {
+      print(e);
+    }
+  }
+
+  testNotice() async {
+    try {
+      var fire = HiNet.getInstance().fire(NoticeRequest());
+      print(fire);
+    } on NeedLogin catch (e) {
+      print(e);
+    } on NeedAuth catch (e) {
+      print(e);
+    } on HiNetError catch (e) {
+      print(e);
+    }
   }
 }
