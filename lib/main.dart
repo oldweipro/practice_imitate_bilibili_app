@@ -7,6 +7,7 @@ import 'package:bilibili/http/dao/login_dao.dart';
 import 'package:bilibili/http/request/notice_request.dart';
 import 'package:bilibili/model/owner.dart';
 import 'package:bilibili/page/registration_page.dart';
+import 'package:bilibili/util/color.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: white,
       ),
       home: RegistrationPage(),
     );
