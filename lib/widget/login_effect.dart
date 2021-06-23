@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LoginEffect extends StatefulWidget {
-  final bool protect;
+  final bool protected;
 
-  const LoginEffect(this.protect, {Key key}) : super(key: key);
+  const LoginEffect(this.protected, {Key key}) : super(key: key);
 
   @override
   _LoginEffectState createState() => _LoginEffectState();
@@ -33,10 +33,10 @@ class _LoginEffectState extends State<LoginEffect> {
   }
 
   _image(bool left) {
-    var headLeft = widget.protect
+    var headLeft = widget.protected
         ? 'images/head_left_protect.png'
         : 'images/head_left.png';
-    var headRight = widget.protect
+    var headRight = widget.protected
         ? 'images/head_right_protect.png'
         : 'images/head_right.png';
     return Image(

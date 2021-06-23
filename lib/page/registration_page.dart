@@ -1,7 +1,9 @@
 import 'package:bilibili/http/core/hi_error.dart';
 import 'package:bilibili/http/dao/login_dao.dart';
 import 'package:bilibili/util/string_util.dart';
+import 'package:bilibili/util/toast.dart';
 import 'package:bilibili/widget/app_bar.dart';
+import 'package:bilibili/widget/login_button.dart';
 import 'package:bilibili/widget/login_effect.dart';
 import 'package:bilibili/widget/login_input.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +95,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
             Padding(
               padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: _loginButton(),
+              child: LoginButton(
+                '注册',
+                enable: loginEnable,
+                onPressed: checkParams,
+              ),
             )
           ],
         ),
@@ -134,18 +140,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
           await LoginDao.registration(username, password, userId, orderId);
       if (result['code'] == 0) {
         print('注册成功');
+        showToast("注册成功");
         if (widget.onJumpToLogin != null) {
           widget.onJumpToLogin();
         }
       } else {
         print(result['msg']);
+        showWarnToast(result['msg']);
       }
-    } on NeedLogin catch (e) {
-      print(e);
     } on NeedAuth catch (e) {
       print(e);
+      showWarnToast(e.message);
     } on HiNetError catch (e) {
       print(e);
+      showWarnToast(e.message);
     }
   }
 
