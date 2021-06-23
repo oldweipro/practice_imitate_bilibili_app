@@ -6,6 +6,7 @@ import 'package:bilibili/http/core/hi_net.dart';
 import 'package:bilibili/http/dao/login_dao.dart';
 import 'package:bilibili/http/request/notice_request.dart';
 import 'package:bilibili/model/owner.dart';
+import 'package:bilibili/page/registration_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: RegistrationPage(),
     );
   }
 }
