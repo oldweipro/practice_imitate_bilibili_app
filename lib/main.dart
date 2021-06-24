@@ -1,198 +1,103 @@
-import 'dart:convert';
-
-import 'package:bilibili/db/hi_cache.dart';
-import 'package:bilibili/http/core/hi_error.dart';
-import 'package:bilibili/http/core/hi_net.dart';
-import 'package:bilibili/http/dao/login_dao.dart';
-import 'package:bilibili/http/request/notice_request.dart';
-import 'package:bilibili/model/owner.dart';
-import 'package:bilibili/page/login_page.dart';
-import 'package:bilibili/util/color.dart';
+import 'package:bilibili/page/home_page.dart';
+import 'package:bilibili/page/video_detail_page.dart';
 import 'package:flutter/material.dart';
 
+import 'model/video_model.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(BiliApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class BiliApp extends StatefulWidget {
+  const BiliApp({Key key}) : super(key: key);
+
+  @override
+  _BiliAppState createState() => _BiliAppState();
+}
+
+class _BiliAppState extends State<BiliApp> {
+  BiliRouterDelegate routerDelegate = BiliRouterDelegate();
+  BiliRouteInformationParser biliRouteInformationParser =
+      BiliRouteInformationParser();
+
   @override
   Widget build(BuildContext context) {
-    HiCache.preInit();
+    var widget = Router(
+      routeInformationParser: biliRouteInformationParser,
+      routerDelegate: routerDelegate,
+      routeInformationProvider: PlatformRouteInformationProvider(
+          initialRouteInformation: RouteInformation(location: '/')),
+    );
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: white,
-      ),
-      // home: RegistrationPage(),
-      home: LoginPage(),
+      home: widget,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class BiliRouterDelegate extends RouterDelegate<BiliRoutePath>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin {
+  final GlobalKey<NavigatorState> navigatorKey;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  BiliRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+  List<MaterialPage> pages = [];
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    HiCache.preInit();
-  }
-
-  Future<void> _incrementCounter() async {
-    // TestRequest request = TestRequest();
-    // request.add("oldwei", "denglan").add("requestPrams", "niubi");
-    // try {
-    //   var result = await HiNet.getInstance().fire(request);
-    //   print('返回请求结果：$result');
-    // } on NeedAuth catch (e) {
-    //   print('需要授权:$e');
-    // } on NeedLogin catch (e) {
-    //   print('需要登录：$e');
-    // } on HiNetError catch (e) {
-    //   print('全局错误:$e');
-    // } catch (e) {
-    //   print('未知错误:$e');
-    // }
-    // jsonTest();
-    // modelTest();
-    // cacheTest();
-    // testLogin();
-    testNotice();
-  }
+  VideoModel videoModel;
+  BiliRoutePath path;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    pages = [
+      pageWrapper(HomePage(
+        onJumpToDetail: (videoModel) {
+          this.videoModel = videoModel;
+          notifyListeners();
+        },
+      )),
+      if (videoModel != null)
+        pageWrapper(VideoDetailPage(
+          videoModel: videoModel,
+        ))
+    ];
+    return Navigator(
+      key: navigatorKey,
+      pages: pages,
+      onPopPage: (route, result) {
+        if (!route.didPop(result)) {
+          return false;
+        } else {
+          return true;
+        }
+      },
     );
   }
 
-  void jsonTest() {
-    var jsonString =
-        '{"name":"flutter","url":"https://coding.imooc.com/class/487.html"}';
-    // json 转 map
-    Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    print('name:${jsonMap['name']}');
-    print('url:${jsonMap['url']}');
-    // map 转 json
-    String json = jsonEncode(jsonMap);
-    print('json:$json');
+  @override
+  Future<void> setNewRoutePath(BiliRoutePath path) {
+    this.path = path;
   }
+}
 
-  void modelTest() {
-    var ownerMap = {
-      "name": "oldwei",
-      "face": "handsome",
-      "fans": 999999999999999
-    };
-    Owner owner = Owner.fromMap(ownerMap);
-    print('name:${owner.name}');
-    print('face:${owner.face}');
-    print('fans:${owner.fans}');
-  }
-
-  void cacheTest() {
-    HiCache.getInstance().setString("aa", "qwer");
-    var value = HiCache.getInstance().get("aa");
-    print("value:$value");
-  }
-
-  void testLogin() async {
-    try {
-      var result = await LoginDao.login("oldwei", "qwer1234");
-      // var result =
-      //     await LoginDao.registration("oldwei", "qwer1234", '7699791', '5854');
-      print(result);
-    } on NeedAuth catch (e) {
-      print(e);
-    } on HiNetError catch (e) {
-      print(e);
+class BiliRouteInformationParser extends RouteInformationParser<BiliRoutePath> {
+  @override
+  Future<BiliRoutePath> parseRouteInformation(
+      RouteInformation routeInformation) async {
+    final uri = Uri.parse(routeInformation.location);
+    if (uri.pathSegments.length == 0) {
+      return BiliRoutePath.home();
+    } else {
+      return BiliRoutePath.detail();
     }
   }
+}
 
-  testNotice() async {
-    try {
-      var fire = HiNet.getInstance().fire(NoticeRequest());
-      print(fire);
-    } on NeedLogin catch (e) {
-      print(e);
-    } on NeedAuth catch (e) {
-      print(e);
-    } on HiNetError catch (e) {
-      print(e);
-    }
-  }
+class BiliRoutePath {
+  final String location;
+
+  BiliRoutePath.home() : location = '/';
+
+  BiliRoutePath.detail() : location = '/detail';
+}
+
+pageWrapper(Widget child) {
+  return MaterialPage(child: child, key: ValueKey(child.hashCode));
 }
